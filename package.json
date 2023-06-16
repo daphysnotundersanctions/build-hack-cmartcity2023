@@ -1,0 +1,23 @@
+{
+  "name": "build-hack-cmartcity2023",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^6.8.0",
+    "@babylonjs/loaders": "^6.8.0",
+    "@wenxin123/babylonjs-mmd-loader": "^0.1.4",
+    "axios": "^1.4.0",
+    "vue": "^3.2.47",
+    "vue-router": "4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.1.0",
+    "vite": "^4.3.9"
+  }
+}
