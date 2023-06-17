@@ -2,11 +2,13 @@ import {
   Engine,
   Scene,
   FreeCamera,
-  Vector3,
   MeshBuilder,
   StandardMaterial,
   Color3,
   AssetsManager,
+  DirectionalLight,
+  Vector3,
+  ShadowGenerator,
   FlyCamera,
   CubeTexture,
   SceneLoader,
@@ -18,8 +20,8 @@ import { OBJFileLoader } from "@babylonjs/loaders";
 const createScene = (canvas) => {
   const engine = new Engine(canvas);
   const scene = new Scene(engine);
-
-  engine.setHardwareScalingLevel(0.5);
+  // scene.ambientColor = new Color3(0.3, 0.3, 0.3);
+  engine.setHardwareScalingLevel(0.8);
 
   const camera = new FlyCamera("FlyCamera", new Vector3(0, 5, -10), scene);
 
@@ -32,36 +34,71 @@ const createScene = (canvas) => {
   // var hdrTexture = new CubeTexture.CreateFromPrefilteredData("/Assets/environment.dds", scene);
   // hdrTexture.gammaSpace = false;
 
-  SceneLoader.Append("src/assets/", "city.obj", scene, function (scene) {
-    // scene.createDefaultCameraOrLight(true, true, true);
-    // scene.createDefaultSkybox(true, 100, 0.3);
-    // scene.activeCamera.lowerRadiusLimit = 2;
-    // scene.activeCamera.upperRadiusLimit = 20;
-    // scene.createDefaultCameraOrLight(true, true, true);
-    // The default camera looks at the back of the asset.
-    // Rotate the camera by 180 degrees to the front of the asset.
-    scene.activeCamera.alpha += Math.PI;
-    // camera.rollCorrect = 10;
-    // camera.bankedTurn = true;
-    // camera.bankedTurnLimit = Math.PI / 2;
-    // camera.bankedTurnMultiplier = 1;
-    // camera.attachControl(canvas, true);
-  });
+  const city = SceneLoader.Append(
+    "src/assets/",
+    "city.obj",
+    scene,
+    function (scene) {
+      scene.createDefaultCameraOrLight(true, true, true);
 
+      scene.lights[0].dispose();
+      var light = new DirectionalLight("light1", new Vector3(-2, -3, 1), scene);
+      light.position = new Vector3(6, 9, 3);
+      var generator = new ShadowGenerator(512, light);
+      generator.useBlurExponentialShadowMap = true;
+      generator.blurKernel = 32;
+
+      for (var i = 0; i < scene.meshes.length; i++) {
+        generator.addShadowCaster(scene.meshes[i]);
+      }
+
+      var helper = scene.createDefaultEnvironment({
+        enableGroundMirror: true,
+        groundShadowLevel: 0.6,
+      });
+
+      // scene.createDefaultSkybox(true, 100, 0.3);
+
+      // scene.activeCamera.lowerRadiusLimit = 2;
+      // scene.activeCamera.upperRadiusLimit = 20;
+      // scene.createDefaultCameraOrLight(true, true, true);
+      // The default camera looks at the back of the asset.
+      // Rotate the camera by 180 degrees to the front of the asset.
+      // scene.activeCamera.alpha += Math.PI;
+      // camera.rollCorrect = 10;
+      // camera.bankedTurn = true;
+      // camera.bankedTurnLimit = Math.PI / 2;
+      // camera.bankedTurnMultiplier = 1;
+      // camera.attachControl(canvas, true);
+      helper.setMainColor(Color3.Gray());
+    }
+  );
+
+  const texture = new CubeTexture("src/assets/skybox", scene);
+  scene.createDefaultSkybox(texture, true, 100);
+  // OBJFileLoader.OPTIMIZE_WITH_UV = true;
   camera.setTarget(Vector3.Zero());
   camera.attachControl(canvas, true);
 
-  var skybox = MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, scene);
-  var skyboxMaterial = new StandardMaterial("skyBox", scene);
-  skyboxMaterial.backFaceCulling = false;
-  skyboxMaterial.reflectionTexture = new CubeTexture(
-    "src/assets/skybox",
-    scene
-  );
-  skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
-  skyboxMaterial.diffuseColor = new Color3(0, 0, 0);
-  skyboxMaterial.specularColor = new Color3(0, 0, 0);
-  skybox.material = skyboxMaterial;
+  // Cкайбокс
+  // const skybox = MeshBuilder.CreateBox("skyBox", { size: 100.0 }, scene);
+  // const skyboxMaterial = new StandardMaterial("skyBox", scene);
+
+  // skyboxMaterial.backFaceCulling = false;
+  // skyboxMaterial.disableLighting = true;
+
+  // skyboxMaterial.reflectionTexture = new CubeTexture(
+  //   "src/assets/skybox",
+  //   scene
+  // );
+  // skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
+  // skyboxMaterial.diffuseColor = new Color3(0, 0, 0);
+  // skyboxMaterial.specularColor = new Color3(0, 0, 0);
+  // skybox.renderingGroupId = 0;
+  // city.renderingGroupId = 1;
+  // scene.createDefaultSkybox();
+
+  // skybox.material = skyboxMaterial;
 
   // new HemisphericLight("light", Vector3.Up(), scene);
 

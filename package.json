@@ -13,8 +13,10 @@
     "@babylonjs/loaders": "^6.8.0",
     "@wenxin123/babylonjs-mmd-loader": "^0.1.4",
     "axios": "^1.4.0",
+    "sass": "^1.63.4",
     "vue": "^3.2.47",
-    "vue-router": "4"
+    "vue-router": "4",
+    "ymaps": "^0.2.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",
