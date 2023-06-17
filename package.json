@@ -13,6 +13,7 @@
     "@babylonjs/loaders": "^6.8.0",
     "@wenxin123/babylonjs-mmd-loader": "^0.1.4",
     "axios": "^1.4.0",
+    "graphql": "^16.6.0",
     "sass": "^1.63.4",
     "vue": "^3.2.47",
     "vue-router": "4",

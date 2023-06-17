@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div ref="map"></div>
+    <div ref="map" />
     <div ref="coord_form"></div>
   </div>
 </template>
@@ -10,15 +10,15 @@ import { ref, onMounted } from "vue";
 import ymaps from "ymaps";
 const ymap = ref("map");
 async function uploadMap() {
-  await ymaps
+  const map = ymaps
     .load()
     .then((maps) => {
-      ymap.value = new maps.Map("your-map-container", {
+      new maps.Map(ymap, {
         center: [-8.369326, 115.166023],
         zoom: 7,
       });
     })
     .catch((error) => console.log("Failed to load Yandex Maps", error));
 }
-onMounted(() => {}), uploadMap();
+uploadMap();
 </script>
