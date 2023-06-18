@@ -7,9 +7,15 @@ const apiConfig = {
 };
 
 const getPopulationInfo = (info) => {
-  return axios.post("https://api.geointellect.com/poptools/pop_radius", info, {
+  return axios.post(`https://api.geointellect.com/poptools/pop_radius`, info, {
     headers: apiConfig,
   });
 };
 
-export { getPopulationInfo };
+const getMoneyInfo = (info) => {
+  return axios.post(`https://api.geointellect.com/poptools/income_poly`, info, {
+    headers: apiConfig,
+  });
+};
+
+export { getPopulationInfo, getMoneyInfo };

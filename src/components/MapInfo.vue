@@ -11,10 +11,13 @@
     </YandexClusterer>
   </YandexMap>
   <div class="map_buttons">
-    <UiButton :bgColor="'black'" @click="getInfoByCords"
+    <UiButton :bgColor="'greenBorder'" @click="getInfoByCords"
       >Расчитать количество население в радиусе</UiButton
     >
-    <UiButton :bgColor="'greenBorder'" @click="deleteClusterInfo"
+    <UiButton :bgColor="'greenBorder'" @click="getMoney"
+      >Расчитать доход в выделеном полигоне</UiButton
+    >
+    <UiButton :bgColor="'black'" @click="deleteClusterInfo"
       >Удалить все элементы с карты</UiButton
     >
   </div>
@@ -35,7 +38,7 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { useOverlayMeta } from "unoverlay-vue";
-import { getPopulationInfo } from "../API/geo";
+import { getPopulationInfo, getMoneyInfo } from "../API/geo";
 import Overlay from "vuejs-overlay";
 import { yandexMap, yandexMarker, yandexClusterer } from "vue-yandex-maps";
 import UiBallon from "./ui-kit/UiBallon.vue";
@@ -50,6 +53,11 @@ const mediumThirdFigureCoord = ref(0);
 
 const opened = ref(false);
 const visible = ref(false);
+
+const polygon = reactive({
+  polygon:
+    '{"type":"Polygon","coordinates":[[[37.519426,55.658028],[37.520285,55.658633],[37.525992,55.66316],[37.526507,55.665072],[37.528481,55.665314],[37.530971,55.664394],[37.536249,55.664491],[37.540669,55.665096],[37.53758,55.656042],[37.528653,55.657059],[37.521572,55.657592],[37.519426,55.658028]]]}',
+});
 
 const dataToSend = reactive({
   xlon: "",
@@ -138,16 +146,30 @@ function getInfoByCords() {
   //     coordsListToCountMedium.value.length
   //   )
   // );
-  dataToSend.xlon = coordsListToCountMedium.value[0][0];
-  dataToSend.ylat = coordsListToCountMedium.value[0][1];
+  dataToSend.xlon = coordsListToCountMedium.value[0][1];
+  dataToSend.ylat = coordsListToCountMedium.value[0][0];
 
   if (coordsListToCountMedium.value.length > 2) {
     getPopulationInfo(dataToSend).then((response) => {
       opened.value = visible.value = true;
       localPeoplePopulation.value = response.data.results.properties.pop;
       alert(
-        "Количество людей в живущих на этой площаде : " +
+        "Количество людей в живущих в этой области : " +
           response.data.results.properties.pop
+      );
+    });
+  } else {
+    alert("Вы не выделили область для расчёта населения");
+  }
+}
+
+function getMoney() {
+  if (coordsListToCountMedium.value.length > 2) {
+    getMoneyInfo(polygon).then((response) => {
+      opened.value = visible.value = true;
+      console.log(response);
+      alert(
+        "Средний доход в этой области : " + response.data.results.Value + " ₽"
       );
     });
   } else {
@@ -166,5 +188,6 @@ const onClick = (e) =>
 }
 .map_buttons {
   display: flex;
+  gap: 10px;
 }
 </style>
