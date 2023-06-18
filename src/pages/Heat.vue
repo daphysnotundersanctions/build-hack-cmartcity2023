@@ -3,7 +3,7 @@
     <HeatMap />
   </div>
 </template>
-<script setup>
+<script>
 import HeatMap from "../components/HeatMap.vue";
 </script>
 <style lang=""></style>

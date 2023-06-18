@@ -1,4 +1,4 @@
-var json = [
+export const json = [
   {
     Id: "cbc143cc-ab4e-4018-b8f1-af39e7079c59",
     Number: 1,
