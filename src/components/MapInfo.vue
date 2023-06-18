@@ -14,7 +14,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, reactive } from "vue";
+import { getPopulationInfo } from "../API/geo";
 import {
   yandexMap,
   yandexMarker,
@@ -28,6 +29,14 @@ const coordsListToCountMedium = ref([]);
 const mediumFirstFigureCoord = ref(0);
 const mediumSecondFigureCoord = ref(0);
 const mediumThirdFigureCoord = ref(0);
+
+const dataToSend = reactive({
+  xlon: "",
+  ylat: "",
+  size: "",
+  asfeature: "",
+  aswgs: "",
+});
 
 // 1
 function returnMediumFirstValue() {
@@ -91,6 +100,10 @@ const deleteClusterInfo = () => {
   }
   // coordsListToCountMedium.value = [];
 };
+
+function getInfoByCords() {
+  getPopulationInfo(dataToSend).then((response) => {});
+}
 
 const onClick = (e) =>
   coordsListToCountMedium.value.length < 4 &&

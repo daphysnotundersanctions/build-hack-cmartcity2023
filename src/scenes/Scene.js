@@ -14,6 +14,8 @@ import {
   SceneLoader,
   Texture,
   HemisphericLight,
+  ArcRotateCamera,
+  DeviceOrientationCamera,
   VirtualJoysticksCamera,
 } from "@babylonjs/core";
 import { OBJFileLoader } from "@babylonjs/loaders";
@@ -23,7 +25,22 @@ const createScene = (canvas) => {
   // scene.ambientColor = new Color3(0.3, 0.3, 0.3);
   engine.setHardwareScalingLevel(0.8);
 
-  const camera = new FlyCamera("FlyCamera", new Vector3(0, 5, -10), scene);
+  // const camera = new FlyCamera("FlyCamera", new Vector3(0, 5, -10), scene);
+
+  // let camera = new ArcRotateCamera(
+  //   "ArcRotateCamera",
+  //   1,
+  //   0.8,
+  //   10,
+  //   new Vector3(0, 0, 0),
+  //   scene
+  // );
+
+  const camera = new DeviceOrientationCamera(
+    "DevOr_camera",
+    new Vector3(0, 1, -15),
+    scene
+  );
 
   // const manager = new AssetsManager(scene);
 
@@ -32,10 +49,12 @@ const createScene = (canvas) => {
   // manager.load();
 
   // var hdrTexture = new CubeTexture.CreateFromPrefilteredData("/Assets/environment.dds", scene);
+
+  // camera.setPosition(new Vector3(0, 0, -100));
   // hdrTexture.gammaSpace = false;
 
   const city = SceneLoader.Append(
-    "src/assets/",
+    "src/assets/models/",
     "city.obj",
     scene,
     function (scene) {
@@ -59,26 +78,34 @@ const createScene = (canvas) => {
 
       // scene.createDefaultSkybox(true, 100, 0.3);
 
-      // scene.activeCamera.lowerRadiusLimit = 2;
+      // scene.activeCamera.lowerRadiusLimit = 10;
       // scene.activeCamera.upperRadiusLimit = 20;
       // scene.createDefaultCameraOrLight(true, true, true);
-      // The default camera looks at the back of the asset.
-      // Rotate the camera by 180 degrees to the front of the asset.
-      // scene.activeCamera.alpha += Math.PI;
-      // camera.rollCorrect = 10;
+      // scene.activeCamera.alpha += 0.01;
+      // camera.roawllCorrect = 10;
       // camera.bankedTurn = true;
       // camera.bankedTurnLimit = Math.PI / 2;
       // camera.bankedTurnMultiplier = 1;
-      // camera.attachControl(canvas, true);
+      const ground = BABYLON.Mesh.CreateGround(
+        "ground1",
+        6,
+        6,
+        2,
+        scene,
+        false
+      );
+
+      camera.attachControl(canvas, true);
       helper.setMainColor(Color3.Gray());
     }
   );
 
-  const texture = new CubeTexture("src/assets/skybox", scene);
+  const texture = new CubeTexture("src/assets/models/skybox/skybox", scene);
   scene.createDefaultSkybox(texture, true, 100);
+
   // OBJFileLoader.OPTIMIZE_WITH_UV = true;
-  camera.setTarget(Vector3.Zero());
-  camera.attachControl(canvas, true);
+  // camera.setTarget(Vector3.Zero());
+  // camera.attachControl(canvas, true);
 
   // Cкайбокс
   // const skybox = MeshBuilder.CreateBox("skyBox", { size: 100.0 }, scene);
