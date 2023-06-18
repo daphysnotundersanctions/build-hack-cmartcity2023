@@ -4,39 +4,62 @@
       <template v-for="(cord, id) in coordsListToCountMedium" :key="id">
         <YandexMarker :coordinates="cord" :marker-id="123">
           <template #component>
-            <CustomBalloon v-model="name" />
+            <UiBallon :modelValue="cord[0]" v-model="name" />
           </template>
         </YandexMarker>
       </template>
     </YandexClusterer>
   </YandexMap>
-  <button @click="deleteClusterInfo">deleCluster</button>
+  <div class="map_buttons">
+    <UiButton :bgColor="'black'" @click="getInfoByCords"
+      >Расчитать количество население в радиусе</UiButton
+    >
+    <UiButton :bgColor="'greenBorder'" @click="deleteClusterInfo"
+      >Удалить все элементы с карты</UiButton
+    >
+  </div>
+
+  <overlay
+    :opened="opened"
+    animate="zoom-in"
+    :visible="visible"
+    @closed="opened = visible = false"
+  >
+    <span
+      >Количество людей в живущих на этой площаде :
+      {{ localPeoplePopulation }}</span
+    >
+  </overlay>
 </template>
 
 <script setup>
 import { ref, reactive } from "vue";
+import { useOverlayMeta } from "unoverlay-vue";
 import { getPopulationInfo } from "../API/geo";
-import {
-  yandexMap,
-  yandexMarker,
-  yandexClusterer,
-  customBalloon,
-} from "vue-yandex-maps";
+import Overlay from "vuejs-overlay";
+import { yandexMap, yandexMarker, yandexClusterer } from "vue-yandex-maps";
+import UiBallon from "./ui-kit/UiBallon.vue";
+import UiButton from "./ui-kit/UiButton.vue";
 
-const coordinates = ref([55.45, 37.36]);
+const coordinates = ref([55.75, 37.61]);
 
 const coordsListToCountMedium = ref([]);
 const mediumFirstFigureCoord = ref(0);
 const mediumSecondFigureCoord = ref(0);
 const mediumThirdFigureCoord = ref(0);
 
+const opened = ref(false);
+const visible = ref(false);
+
 const dataToSend = reactive({
   xlon: "",
   ylat: "",
-  size: "",
-  asfeature: "",
-  aswgs: "",
+  size: "1000",
+  asfeature: "true",
+  aswgs: "true",
 });
+
+const localPeoplePopulation = ref(null);
 
 // 1
 function returnMediumFirstValue() {
@@ -86,23 +109,50 @@ function returnMediumThirdValue() {
   console.log(first, second);
 }
 
-const name = ref("312");
-
 const deleteClusterInfo = () => {
-  if (coordsListToCountMedium.value.length > 1) {
-    returnMediumFirstValue();
-  }
-  if (coordsListToCountMedium.value.length > 2) {
-    returnMediumSecondValue();
-  }
-  if (coordsListToCountMedium.value.length > 3) {
-    returnMediumThirdValue();
-  }
-  // coordsListToCountMedium.value = [];
+  coordsListToCountMedium.value = [];
 };
 
+function giveAllMedium(arr, n) {
+  if (n == 1) return arr[n - 1];
+  return ((n - 1) * giveAllMedium(arr, n - 1) + arr[n - 1]) / n;
+}
+
+// if (coordsListToCountMedium.value.length > 1) {
+//     returnMediumFirstValue();
+//   }
+//   if (coordsListToCountMedium.value.length > 2) {
+//     returnMediumSecondValue();
+//   }
+//   if (coordsListToCountMedium.value.length > 3) {
+//     returnMediumThirdValue();
+//   }
+//   if (coordsListToCountMedium.value.length === 4) {
+//     returnMediumThirdValue();
+//   }
+
 function getInfoByCords() {
-  getPopulationInfo(dataToSend).then((response) => {});
+  // console.log(
+  //   giveAllMedium(
+  //     coordsListToCountMedium.value,
+  //     coordsListToCountMedium.value.length
+  //   )
+  // );
+  dataToSend.xlon = coordsListToCountMedium.value[0][0];
+  dataToSend.ylat = coordsListToCountMedium.value[0][1];
+
+  if (coordsListToCountMedium.value.length > 2) {
+    getPopulationInfo(dataToSend).then((response) => {
+      opened.value = visible.value = true;
+      localPeoplePopulation.value = response.data.results.properties.pop;
+      alert(
+        "Количество людей в живущих на этой площаде : " +
+          response.data.results.properties.pop
+      );
+    });
+  } else {
+    alert("Вы не выделили область для расчёта населения");
+  }
 }
 
 const onClick = (e) =>
@@ -110,8 +160,11 @@ const onClick = (e) =>
   coordsListToCountMedium.value.push(e.get("coords"));
 </script>
 
-<style>
+<style lang="scss">
 .yandex-container {
   height: 400px;
+}
+.map_buttons {
+  display: flex;
 }
 </style>

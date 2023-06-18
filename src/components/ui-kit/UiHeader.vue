@@ -5,6 +5,7 @@
 </template>
 <style lang="scss" scoped>
 header {
-  background-color: $header-bg;
+  background-color: $color-green;
+  padding: 10px 10px;
 }
 </style>

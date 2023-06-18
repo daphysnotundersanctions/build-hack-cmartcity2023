@@ -10,6 +10,6 @@ import UiHeader from "../components/ui-kit/UiHeader.vue";
 
 <style lang="scss" scoped>
 main {
-  height: 100vh;
+  // height: 100vh;
 }
 </style>
