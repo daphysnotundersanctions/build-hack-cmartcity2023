@@ -16,9 +16,11 @@
     "graphql": "^16.6.0",
     "unoverlay-vue": "^0.3.0",
     "vue": "^3.2.47",
+    "vue-plugin-load-script": "^2.1.1",
     "vue-router": "4",
     "vue-yandex-maps": "^1.1.0",
-    "vuejs-overlay": "^0.0.28"
+    "vuejs-overlay": "^0.0.28",
+    "ymaps": "^0.2.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",

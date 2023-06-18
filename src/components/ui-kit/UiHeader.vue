@@ -6,6 +6,8 @@
       <h3 @click="$router.push('/3dpage')">3Д модель города</h3>
       <h4>/</h4>
       <h3 @click="$router.push('/')">Аналитика</h3>
+      <h4>/</h4>
+      <h3 @click="$router.push('/heat')">Тепловая карта</h3>
     </div>
   </header>
 </template>
