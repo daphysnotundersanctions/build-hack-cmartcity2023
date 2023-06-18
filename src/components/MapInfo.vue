@@ -1,5 +1,5 @@
 <template>
-  <YandexMap @click="onClick" :coordinates="coordinates">
+  <YandexMap class="map" @click="onClick" :coordinates="coordinates">
     <YandexClusterer :options="{ preset: 'islands#invertedRedClusterIcons' }">
       <template v-for="(cord, id) in coordsListToCountMedium" :key="id">
         <YandexMarker :coordinates="cord" :marker-id="123">
@@ -60,8 +60,8 @@ const polygon = reactive({
 });
 
 const dataToSend = reactive({
-  xlon: "",
-  ylat: "",
+  xlon: "37.54762",
+  ylat: "55.66531",
   size: "1000",
   asfeature: "true",
   aswgs: "true",
@@ -146,8 +146,8 @@ function getInfoByCords() {
   //     coordsListToCountMedium.value.length
   //   )
   // );
-  dataToSend.xlon = coordsListToCountMedium.value[0][1];
-  dataToSend.ylat = coordsListToCountMedium.value[0][0];
+  // dataToSend.xlon = coordsListToCountMedium.value[0][1];
+  // dataToSend.ylat = coordsListToCountMedium.value[0][0];
 
   if (coordsListToCountMedium.value.length > 2) {
     getPopulationInfo(dataToSend).then((response) => {
@@ -189,5 +189,9 @@ const onClick = (e) =>
 .map_buttons {
   display: flex;
   gap: 10px;
+  margin-top: 25px;
+}
+.map {
+  height: 800px;
 }
 </style>

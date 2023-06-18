@@ -1,6 +1,8 @@
 <template>
-  <div class="cityModel">
-    <canvas ref="bjsCanvas" width="500" height="500" />
+  <div style="margin-top: 50px">
+    <div class="cityModel">
+      <canvas ref="bjsCanvas" width="500" height="500" />
+    </div>
   </div>
 </template>
 
